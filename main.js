@@ -24,6 +24,8 @@ const params = {
   radius: 5,
   branches: 3,
   spin: 1,
+  randomness: 0.2,
+  randomnessPow: 3,
 }
 
 let geometry = null
@@ -49,13 +51,19 @@ function generateGalaxy() {
 
     const branchAngle = ((i % params.branches) / params.branches) * 2 * Math.PI
 
-    // if (i < 20) {
-    //   console.log(i, branchAngle)
-    // }
+    const randomX =
+      Math.pow(Math.random(), params.randomnessPow) *
+      (Math.random() < 0.5 ? 1 : -1)
+    const randomY =
+      Math.pow(Math.random(), params.randomnessPow) *
+      (Math.random() < 0.5 ? 1 : -1)
+    const randomZ =
+      Math.pow(Math.random(), params.randomnessPow) *
+      (Math.random() < 0.5 ? 1 : -1)
 
-    positions[i3] = Math.cos(branchAngle + spinAngle) * radius
-    positions[i3 + 1] = 0
-    positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius
+    positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX
+    positions[i3 + 1] = 0 + randomY
+    positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ
   }
 
   const bufferPosAttr = new THREE.BufferAttribute(positions, 3)
@@ -90,6 +98,14 @@ debugGalaxy.add(params, "sizeAttenuation").onFinishChange(generateGalaxy)
 debugGalaxy.add(params, "radius", 5, 20, 0.01).onFinishChange(generateGalaxy)
 debugGalaxy.add(params, "branches", 2, 10, 1).onFinishChange(generateGalaxy)
 debugGalaxy.add(params, "spin", -5, 5, 0.01).onFinishChange(generateGalaxy)
+debugGalaxy
+  .add(params, "randomness", 0, 2, 0.001)
+  .onFinishChange(generateGalaxy)
+
+debugGalaxy
+  .add(params, "randomnessPow", 1, 10, 0.001)
+  .onFinishChange(generateGalaxy)
+
 /**
  * Sizes
  */
